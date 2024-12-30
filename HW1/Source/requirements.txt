@@ -1,0 +1,7 @@
+tkinter
+random
+gtts
+playsound
+tempfile
+os
+unidecode

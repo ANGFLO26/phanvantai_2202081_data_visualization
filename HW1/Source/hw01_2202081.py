@@ -47,7 +47,7 @@ class VocabularyApp:
        self.wrong_count = 0
 
 
-       # Khung chọn chế độ
+       # Mode selection frame
        self.mode_frame = tk.Frame(root, bg="#f5f5f5")
        self.mode_frame.pack(expand=True)
 
@@ -74,28 +74,28 @@ class VocabularyApp:
        self.mode_button_3.pack(pady=10)
 
 
-       # Khung học tập
+       # Learning Framework
        self.learning_frame = tk.Frame(root, bg="#ffffff", relief="groove", bd=2)
-       # Không đóng gói ngay lập tức, sẽ đóng gói khi cần
+       # No packing immediately, will pack when needed
 
 
-       # Thêm nút "Bắt đầu học"
+       # Add "Start Learning" button
        self.start_button = tk.Button(
        self.learning_frame,
        text="Start Learning",
        command=self.start_session,
-       font=("Helvetica", 14, "bold"),  # Làm chữ đậm
-       bg="#007BFF",  # Màu nền xanh dương đậm hơn
-       fg="white",  # Màu chữ trắng
-       activebackground="#0056b3",  # Màu nền khi nhấn
-       activeforeground="white",  # Màu chữ khi nhấn
-       bd=0,  # Loại bỏ đường viền
-       relief="ridge",  # Hiệu ứng bo cạnh mềm mại
-       padx=20,  # Khoảng cách ngang bên trong
-       pady=10,  # Khoảng cách dọc bên trong
-       width=30  # Chiều rộng của nút
+       font=("Helvetica", 14, "bold"),  
+       bg="#007BFF",  
+       fg="white", 
+       activebackground="#0056b3",  
+       activeforeground="white",  
+       bd=0,  
+       relief="ridge",  
+       padx=20, 
+       pady=10,  
+       width=30  
    )
-   # Đưa nút vào chính giữa
+  # Center the button
        self.start_button.place(relx=0.5, rely=0.5, anchor="center")
 
 
@@ -103,9 +103,9 @@ class VocabularyApp:
 
 
 
-       # Khung hiển thị thông tin
+       # Information display frame
        self.info_frame = tk.Frame(self.learning_frame, bg="#ffffff")
-       # Chưa đóng gói, sẽ đóng gói khi "Bắt đầu học" được nhấn
+       # Not packed yet, will pack when "Start Learning" is pressed
 
 
        self.word_label = tk.Label(self.info_frame, text="", font=("Helvetica", 24), pady=10, bg="#ffffff", fg="#333")
@@ -117,9 +117,9 @@ class VocabularyApp:
        self.repeat_button.pack()
 
 
-       # Khung nhập liệu
+       # Input box
        self.input_frame = tk.Frame(self.learning_frame, bg="#f9f9f9", relief="groove", bd=2)
-       # Chưa đóng gói, sẽ đóng gói khi "Bắt đầu học" được nhấn
+       # Not packed yet, will pack when "Start Learning" is pressed
 
 
        self.input_label_1 = tk.Label(self.input_frame, text="Enter English words:", font=("Helvetica", 14), bg="#f9f9f9", fg="#555")
@@ -145,9 +145,9 @@ class VocabularyApp:
        self.result_label.pack()
 
 
-       # Khung điều khiển
+      # Control frame
        self.control_frame = tk.Frame(self.learning_frame, bg="#ffffff", relief="groove", bd=2)
-       # Chưa đóng gói, sẽ đóng gói khi "Bắt đầu học" được nhấn
+       # Not packed yet, will pack when "Start Learning" is pressed
 
 
        self.answer_button = tk.Button(self.control_frame, text="See Answer", command=self.show_answer, font=("Helvetica", 12),
@@ -169,9 +169,9 @@ class VocabularyApp:
        self.mode = mode
        self.mode_frame.pack_forget()
        self.learning_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=20)
-       # Hiển thị chỉ nút "Bắt đầu học"
+       # Show only "Start Learning" button
        self.start_button.pack()
-       # Ẩn các thành phần học tập khác nếu đã được hiển thị từ trước
+       # Hide other learning components if they are already displayed
        self.info_frame.pack_forget()
        self.input_frame.pack_forget()
        self.control_frame.pack_forget()
@@ -181,7 +181,7 @@ class VocabularyApp:
 
 
    def start_session(self):
-       # Khi nhấn "Bắt đầu học", ẩn nút này và hiển thị các thành phần học tập
+       # When pressing "Start Learning", hide this button and show learning components
        self.start_button.pack_forget()
        self.info_frame.pack(fill=tk.BOTH, pady=10)
        self.input_frame.pack(fill=tk.BOTH, padx=20, pady=10)
@@ -218,15 +218,15 @@ class VocabularyApp:
            self.current_word, self.current_phonetic, self.current_meaning = self.vocabulary.pop()
            if self.mode == 1:
                self.word_label.config(text="")
-               self.repeat_button.pack()  # Hiển thị nút "Nghe lại"
+               self.repeat_button.pack()  # Show "Play Again" button
                self.play_audio(self.current_word, 'en')
            elif self.mode == 2:
                self.word_label.config(text="")
-               self.repeat_button.pack()  # Hiển thị nút "Nghe lại"
+               self.repeat_button.pack()  # Show "Play Again" button
                self.play_audio(self.current_meaning, 'vi')
            elif self.mode == 3:
                self.word_label.config(text=self.current_phonetic)
-               self.repeat_button.pack_forget()  # Ẩn nút "Nghe lại"
+               self.repeat_button.pack_forget()  # Hide "Play Again" button
        else:
            response = messagebox.askyesno("Complete", "You have learned all the vocabulary! Do you want to learn it all over again?")
            if response:
@@ -276,7 +276,7 @@ class VocabularyApp:
        self.input_box_1.delete(0, tk.END)
        self.input_box_2.delete(0, tk.END)
        self.result_label.config(text="")
-       # Ẩn các thành phần học tập khi quay lại chế độ
+    # Hide learning elements when returning to mode
        self.info_frame.pack_forget()
        self.input_frame.pack_forget()
        self.control_frame.pack_forget()
@@ -287,7 +287,7 @@ class VocabularyApp:
        self.root.quit()
 
 
-# Chạy ứng dụng
+# Run the application
 if __name__ == "__main__":
    root = tk.Tk()
    app = VocabularyApp(root)

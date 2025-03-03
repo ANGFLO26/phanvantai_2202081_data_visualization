@@ -1,0 +1,21 @@
+City,Temperature(K),Humidity(%),Weather Description,Latitude,Longitude
+London,276.49,91,scattered clouds,51.5085,-0.1257
+New York,281.05,69,clear sky,40.7143,-74.006
+Paris,277.73,95,broken clouds,48.8534,2.3488
+Tokyo,288.56,20,few clouds,35.6895,139.6917
+Mumbai,303.14,32,smoke,19.0144,72.8479
+Sydney,301.6,62,scattered clouds,-33.8679,151.2073
+Berlin,279.34,91,light rain,52.5244,13.4105
+Rome,282.4,54,clear sky,34.257,-85.1647
+Moscow,267.4,58,overcast clouds,55.7522,37.6156
+Beijing,279.09,16,clear sky,39.9075,116.3972
+Los Angeles,290.68,62,clear sky,34.0522,-118.2437
+Rio de Janeiro,299.95,72,clear sky,-22.9028,-43.2075
+Cairo,282.57,66,clear sky,30.0626,31.2497
+Cape Town,293.06,75,clear sky,-33.9258,18.4232
+Dubai,291.11,63,clear sky,25.2582,55.3047
+Seoul,279.91,26,clear sky,37.5683,126.9778
+Singapore,303.96,64,broken clouds,1.2897,103.8501
+Toronto,276.37,82,broken clouds,43.7001,-79.4163
+Mexico City,292.01,32,clear sky,19.4285,-99.1277
+Hong Kong,292.22,78,overcast clouds,22.2855,114.1577

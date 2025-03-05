@@ -1,107 +1,124 @@
-import streamlit as st # type: ignore
-import yt_dlp # type: ignore
+import streamlit as st
+import yt_dlp
 import time
 import pandas as pd
-import plotly.graph_objects as go # type: ignore
-import os
+import plotly.express as px
 
-# CSV file for storing data
-CSV_FILE = "/home/phanvantai/Documents/THREE_YEARS/three_year_02/data visualization/midterm/data/youtube_video_data.csv"
-# YouTube video URL to track
-VIDEO_URL = "https://youtu.be/ESw0aKi8elE?si=pdo25fb6Cp6e-J-s"  # Replace with your video
-
-# Read data from CSV file if it exists
-if os.path.exists(CSV_FILE):
-    df = pd.read_csv(CSV_FILE, parse_dates=["Timestamp"])
-else:
-    df = pd.DataFrame(columns=["Timestamp", "Views", "Likes", "Comments"])
-
-def get_change(curr_value, prev_value):
-    if prev_value is None:
-        return "N/A"
-    change = curr_value - prev_value
-    if change > 0:
-        return f"🔼 +{change:,}"
-    elif change < 0:
-        return f"🔽 {change:,}"
-    else:
-        return "➡ 0"
-
-st.markdown("<h1 style='text-align: center;'>📊 Real-time Tracking of a YouTube Video</h1>", unsafe_allow_html=True)
-placeholder = st.empty()
-
-while True:
+# Function to fetch video data from YouTube
+def fetch_video_data(video_url):
     try:
         with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl:
-            info = ydl.extract_info(VIDEO_URL, download=False)
+            info = ydl.extract_info(video_url, download=False)
         
-        # Fetch new data
-        timestamp = pd.Timestamp.now()
-        views = info.get("view_count", 0)
-        likes = info.get("like_count", 0)
-        comments = info.get("comment_count", 0)
-
-        # Get previous values if available
-        prev_views = df["Views"].iloc[-1] if not df.empty else None
-        prev_likes = df["Likes"].iloc[-1] if not df.empty else None
-        prev_comments = df["Comments"].iloc[-1] if not df.empty else None
-
-        # Calculate changes
-        views_change = get_change(views, prev_views)
-        likes_change = get_change(likes, prev_likes)
-        comments_change = get_change(comments, prev_comments)
-
-        # Append new data to DataFrame
-        new_data = pd.DataFrame({
-            "Timestamp": [timestamp],
-            "Views": [views],
-            "Likes": [likes],
-            "Comments": [comments]
-        })
-        
-        if df.empty:
-            df = new_data
-        else:
-            df = pd.concat([df, new_data], ignore_index=True)
-
-        # Check if data reaches 100 points, delete CSV file and create a new one
-        if len(df) >= 100:
-            os.remove(CSV_FILE)
-            df = new_data  # Keep only the latest data
-
-        # Save to CSV file
-        df.to_csv(CSV_FILE, index=False)
-
-        # Plot graph using Plotly
-        fig = go.Figure()
-        for key, name, color in zip(["Views", "Likes", "Comments"],
-                                    ["Views", "Likes", "Comments"],
-                                    ["blue", "red", "green"]):
-            hover_texts = [
-                f"<b>{name}</b>: {df[key][i]:,}<br>🔄 Change: {get_change(df[key][i], df[key][i-1] if i > 0 else None)}"
-                for i in range(len(df["Timestamp"]))
-            ]
-
-            fig.add_trace(go.Scatter(
-                x=df["Timestamp"], y=df[key],
-                mode="lines+markers", name=f"{name} ({get_change(df[key].iloc[-1], df[key].iloc[-2] if len(df) > 1 else None)})",
-                line=dict(color=color), marker=dict(size=8),
-                hoverinfo="text",
-                hovertext=hover_texts
-            ))
-        
-        fig.update_layout(
-            title="📊 Analyze a YouTube video based on views, likes, comments",
-            xaxis_title="Time",
-            yaxis_title="Count",
-            hovermode="x unified"
-        )
-
-        # Display graph in Streamlit
-        placeholder.plotly_chart(fig, use_container_width=True)
-
+        return {
+            "Views": info.get("view_count", 0),
+            "Likes": info.get("like_count", 0),
+            "Comments": info.get("comment_count", 0),
+            "Timestamp": pd.Timestamp.now()
+        }
     except Exception as e:
-        st.error(f"❌ Error fetching data: {e}")
+        st.error(f"Error fetching data: {e}")
+        return None
 
-    # Wait 60 seconds before next update
-    time.sleep(60)
+# Function to create line charts
+def create_line_chart(df, column, title, color):
+    if len(df) < 2:
+        return None
+
+    df["Change"] = df[column].diff()  # Calculate change compared to the previous record
+
+    fig = px.line(df, x="Timestamp", y=column, title=title, markers=True)
+    fig.update_traces(line=dict(color=color, width=2))
+
+    # Adjust display settings
+    fig.update_layout(
+        xaxis=dict(showgrid=True, tickangle=45),
+        yaxis=dict(showgrid=True, zeroline=True),
+        hovermode="x unified"
+    )
+
+    # Add tooltip to display changes
+    fig.update_traces(
+        hovertemplate="<b>Time:</b> %{x}<br>"
+                      "<b>Value:</b> %{y}<br>"
+                      "<b>Change:</b> %{customdata}",
+        customdata=df["Change"]
+    )
+
+    return fig
+
+# Main function
+def main():
+    st.set_page_config(layout="wide")
+    st.title("🎥 YouTube Video Statistics Tracker")
+
+    # Sidebar configuration
+    st.sidebar.header("Tracking Settings")
+    update_interval = st.sidebar.slider("Update Interval (seconds)", 5, 60, 10)
+    VIDEO_URL = st.sidebar.text_input("YouTube Video URL", "https://youtu.be/ESw0aKi8elE")
+
+    # Tracking status
+    if "tracking" not in st.session_state:
+        st.session_state.tracking = False
+        st.session_state.data = pd.DataFrame(columns=["Timestamp", "Views", "Likes", "Comments"])
+
+    # Start/Stop button
+    if st.session_state.tracking:
+        if st.sidebar.button("Stop Tracking"):
+            st.session_state.tracking = False
+            st.success("Tracking stopped")
+    else:
+        if st.sidebar.button("Start Tracking"):
+            st.session_state.tracking = True
+            st.session_state.data = pd.DataFrame(columns=["Timestamp", "Views", "Likes", "Comments"])  # Reset data
+            st.success("Started tracking video")
+
+    # Update and display data while tracking
+    if st.session_state.tracking:
+        new_data = fetch_video_data(VIDEO_URL)
+        if new_data:
+            if not st.session_state.data.empty:
+                st.session_state.data = pd.concat(
+                    [st.session_state.data, pd.DataFrame([new_data])],
+                    ignore_index=True
+                )
+            else:
+                st.session_state.data = pd.DataFrame([new_data])  # Avoid concatenating with an empty DataFrame
+
+            # Keep only the last 50 data points for better visualization
+            if len(st.session_state.data) > 50:
+                st.session_state.data = st.session_state.data.tail(20)
+
+            df = st.session_state.data
+
+            # Calculate the most recent change
+            views_change = df["Views"].diff().iloc[-1] if len(df) > 1 else 0
+            likes_change = df["Likes"].diff().iloc[-1] if len(df) > 1 else 0
+            comments_change = df["Comments"].diff().iloc[-1] if len(df) > 1 else 0
+
+            # Display metrics
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Views", f"{df.iloc[-1]['Views']:,}", f"{views_change:,}")
+            col2.metric("Likes", f"{df.iloc[-1]['Likes']:,}", f"{likes_change:,}")
+            col3.metric("Comments", f"{df.iloc[-1]['Comments']:,}", f"{comments_change:,}")
+
+            # Display charts in a single row
+            col_chart1, col_chart2, col_chart3 = st.columns(3)
+
+            chart_views = create_line_chart(df, "Views", "📊 Views", "blue")
+            chart_likes = create_line_chart(df, "Likes", "❤️ Likes", "red")
+            chart_comments = create_line_chart(df, "Comments", "💬 Comments", "green")
+
+            if chart_views:
+                col_chart1.plotly_chart(chart_views, use_container_width=True)
+            if chart_likes:
+                col_chart2.plotly_chart(chart_likes, use_container_width=True)
+            if chart_comments:
+                col_chart3.plotly_chart(chart_comments, use_container_width=True)
+
+            # Auto-update
+            time.sleep(update_interval)
+            st.rerun()
+
+if __name__ == "__main__":
+    main()

@@ -1,15 +1,16 @@
-# User Journey Analyst
+# User Conversion Funnel Analysis
 
 ## A. Introduction
 
-This project helps in understanding Funnel Charts by analyzing user journeys. Funnel charts track conversion rates across different stages, from landing on the homepage to completing a transaction. This allows for identifying and improving drop-off points in the user journey.
+This project analyzes user behavior using a **Funnel Chart**. By tracking the number of users at each stage and calculating drop-off rates, this analysis helps identify where users abandon the process, allowing for optimization.
 
 ## B. Process
 
-- Analyze the number of users at each stage: `homepage`, `product_page`, `cart`, `checkout`, `purchase`.
-- Calculate conversion rates between stages.
-- Display an interactive funnel chart.
-- Support reading data from a CSV file.
+- Load and read user interaction data from a CSV file.
+- Count the number of users at each stage.
+- Sort stages based on user count.
+- Calculate drop-off rates between stages.
+- Visualize data using an interactive funnel chart.
 
 ## C. System Requirements
 
@@ -18,7 +19,7 @@ This project helps in understanding Funnel Charts by analyzing user journeys. Fu
 
 ## D. Installation
 
-Install the required libraries:
+Ensure Python is installed, then install the required libraries:
 
 
 ```bash
@@ -27,17 +28,17 @@ pip install -r requirements.txt
 
 ## E. Usage Instructions
 
-1. Place the " user_data.csv " file inside the data folder.
-2. Run the following command in the terminal or command prompt:
+1. Place the `user_data.csv` file in the `data` directory.
+2. Run the script using the command:
    ```sh
    python hw_plot.ipynb
    ```
-3. The output will display:
-   - Total number of users at each stage.
-   - Conversion rates between stages.
-   - The funnel chart will open in a browser.
+3. The output will include:
+   - The total number of users at each stage.
+   - Drop-off rates between stages.
+   - An interactive funnel chart visualizing the user journey.
 
 ## H. Author
 
-**Phan Van Tai**
+**Tài Phan**
 

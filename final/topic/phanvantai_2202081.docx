@@ -1,0 +1,41 @@
+[DOCX]
+
+Personal Information:
+- Name: Phan Van Tai
+- Student ID: 2202081
+- Course: Data Visualization
+
+1. Objective
+The objective of this project is to analyze and visualize the StudentsPerformance.csv dataset to discover patterns, relationships, and insights about students' academic performance based on demographic and social factors.
+
+2. Dataset Description
+- File: StudentsPerformance.csv
+- Description: The dataset contains information about students' gender, race/ethnicity, parental level of education, lunch type, and scores in math, reading, and writing.
+- Main columns:
+  - gender
+  - race/ethnicity
+  - parental level of education
+  - lunch
+  - math score
+  - reading score
+  - writing score
+
+3. Project Requirements
+
+3.1. Data Analysis
+- Overview of the dataset structure and basic statistics.
+- Analyze learning outcomes: descriptive statistics, score distributions, and correlations between subjects.
+- Analyze by gender: compare average scores, score distributions, and group performance by gender.
+- Analyze by parental level of education: compare average scores and score distributions by parental education level.
+- Analyze by lunch type: compare average scores and score distributions by lunch type.
+- Analyze by race/ethnicity: compare average scores and score distributions by race/ethnicity.
+
+3.2. Data Visualization
+- Use bar plots to compare average scores across groups.
+- Use boxplots and violin plots to show score distributions.
+- Use heatmaps to visualize correlations between subjects.
+- Use scatter plots to explore relationships between different scores.
+- Ensure all visualizations are clear, labeled, and support the analysis objectives.
+
+---
+This document serves as a guideline for conducting a comprehensive data analysis and visualization project on the StudentsPerformance.csv dataset. 
